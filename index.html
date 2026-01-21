@@ -7,11 +7,12 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
         .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; width: 90%; }
-        h1 { color: #d63384; }
-        input { width: 80%; padding: 10px; margin: 10px 0; border: 2px solid #ffb6c1; border-radius: 10px; outline: none; font-size: 16px; /* Evita zoom automático en iPhone */ }
-        button { background-color: #d63384; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        #mensaje { display: none; margin-top: 20px; color: #555; line-height: 1.6; }
+        h1 { color: #d63384; font-size: 1.6rem; }
+        input { width: 80%; padding: 12px; margin: 10px 0; border: 2px solid #ffb6c1; border-radius: 10px; outline: none; font-size: 16px; }
+        button { background-color: #d63384; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        #mensaje { display: none; margin-top: 20px; color: #555; line-height: 1.6; animation: fadeIn 2s; }
         .pista { font-size: 0.9em; color: #888; font-style: italic; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -22,15 +23,15 @@
 
 <div class="card">
     <div id="login">
-        <h1>Para Nath. 🌺🌹 </h1>
+        <h1>Para Nath. 🌺🌹</h1>
         <p class="pista">Pista: ¿Dia que aceptaste ser mi novia? (2 digitos)</p>
-        <input type="text" id="pass" placeholder="Julio">
+        <input type="text" id="pass" placeholder="Escribe aquí...">
         <button onclick="verificar()">Abrir</button>
     </div>
 
     <div id="mensaje">
         <h1>Nunca supe con exactitud por qué tu.</h1>
-        <p> Solo sé que mi corazón te sigue eligiendo, pueden pasar días, meses o años y te seguiré esperando, porque fuiste la única con la que pude comportarme tal y como soy. Eres una persona maravillosa, perfecta y con un gran corazón y todos los dias me arrepiento de mis errores, y bueno no puedo volver al pasado para evitar todo el daño que te hice, pero si puedo mejorar por la experiencia de haberte conocido y si algún día decides volver, estaré esperandote con los brazos abiertos, no prometo que será perfecto, pero si que no te arrepentirás de volver. Y si no quieres volver, solo prométeme que serás feliz. Nunca olvides que te amo con la misma fuerza de siempre y que te elijo una y mil veces. Con mucho mas que decir, ahora solo diré TE AMO NATH.</p>
+        <p>Solo sé que mi corazón te sigue eligiendo, pueden pasar días, meses o años y te seguiré esperando, porque fuiste la única con la que pude comportarme tal y como soy. Eres una persona maravillosa, perfecta y con un gran corazón y todos los dias me arrepiento de mis errores, y bueno no puedo volver al pasado para evitar todo el daño que te hice, pero si puedo mejorar por la experiencia de haberte conocido y si algún día decides volver, estaré esperandote con los brazos abiertos, no prometo que será perfecto, pero si que no te arrepentirás de volver. Y si no quieres volver, solo prométeme que serás feliz. Nunca olvides que te amo con la misma fuerza de siempre y que te elijo una y mil veces. Con mucho mas que decir, ahora solo diré TE AMO NATH.</p>
         <p><strong>22.01.2026</strong></p>
         <p>✨🌹✨</p>
     </div>
@@ -39,44 +40,36 @@
 <script>
     function verificar() {
         const claveCorrecta = "20"; 
-        const input = document.getElementById('pass').value.toLowerCase().trim();
+        const input = document.getElementById('pass').value.trim();
         const musica = document.getElementById('musicaFondo');
         
-        // "Despertar" el audio para iOS antes de la validación
-        musica.play().then(() => {
-            // Si la música inicia pero la clave es incorrecta, la pausamos
-            if (input !== claveCorrecta.toLowerCase()) {
-                musica.pause();
-                musica.currentTime = 0;
-                alert("¡Clave incorrecta! Inténtalo de nuevo.");
-            } else {
-                // Si la clave es correcta, mostramos el mensaje
-                document.getElementById('login').style.display = 'none';
-                document.getElementById('mensaje').style.display = 'block';
-                
-                // Enviar notificación
-                fetch("https://formspree.io/f/mbddzplb", {
-                    method: "POST",
-                    body: JSON.stringify({ mensaje: "¡Nath acaba de leer tu tarjeta!" }),
-                    headers: { 'Content-Type': 'application/json' }
+        if (input === claveCorrecta) {
+            // 1. Mostrar el mensaje inmediatamente
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('mensaje').style.display = 'block';
+
+            // 2. Intentar reproducir música (Manejo de error para iPhone)
+            const intentarReproducir = setInterval(() => {
+                musica.play().then(() => {
+                    clearInterval(intentarReproducir);
+                }).catch(error => {
+                    console.log("Esperando interacción o revisando silencio...");
                 });
-            }
-        }).catch(error => {
-            // Si el navegador bloquea el play directo, lo intentamos tras la validación
-            if (input === claveCorrecta.toLowerCase()) {
-                document.getElementById('login').style.display = 'none';
-                document.getElementById('mensaje').style.display = 'block';
-                musica.play();
-                
-                fetch("https://formspree.io/f/mbddzplb", {
-                    method: "POST",
-                    body: JSON.stringify({ mensaje: "¡Nath acaba de leer tu tarjeta!" }),
-                    headers: { 'Content-Type': 'application/json' }
-                });
-            } else {
-                alert("¡Clave incorrecta! Inténtalo de nuevo.");
-            }
-        });
+            }, 100);
+
+            // 3. Detener intento de música tras 3 segundos para no gastar recursos
+            setTimeout(() => clearInterval(intentarReproducir), 3000);
+            
+            // 4. Notificación Formspree
+            fetch("https://formspree.io/f/mbddzplb", {
+                method: "POST",
+                body: JSON.stringify({ mensaje: "¡Nath acaba de abrir su tarjeta! 🌹" }),
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+            });
+
+        } else {
+            alert("¡Esa no es la clave! Inténtalo de nuevo.");
+        }
     }
 </script>
 
