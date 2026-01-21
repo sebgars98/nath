@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un detalle para ti</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; width: 90%; }
+        h1 { color: #d63384; }
+        input { width: 80%; padding: 10px; margin: 10px 0; border: 2px solid #ffb6c1; border-radius: 10px; outline: none; }
+        button { background-color: #d63384; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+        #mensaje { display: none; margin-top: 20px; color: #555; line-height: 1.6; }
+        .pista { font-size: 0.9em; color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="login">
+        <h1>🌹 Un detalle para ti</h1>
+        <p class="pista">Pista: ¿Cómo se llama el lugar donde nos conocimos? (o tu pista aquí)</p>
+        <input type="text" id="pass" placeholder="Escribe la clave aquí...">
+        <button onclick="verificar()">Abrir</button>
+    </div>
+
+    <div id="mensaje">
+        <h1>¡Lo lograste!</h1>
+        <p>Aquí va tu mensaje personalizado: "Eres una persona increíble y quería que estas rosas te recordaran lo mucho que valoro tu amistad..."</p>
+        <p>✨🌹✨</p>
+    </div>
+</div>
+
+<script>
+    function verificar() {
+        const claveCorrecta = "AQUÍ_TU_CLAVE"; // CAMBIA ESTO
+        const input = document.getElementById('pass').value.toLowerCase().trim();
+        
+        if (input === claveCorrecta.toLowerCase()) {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('mensaje').style.display = 'block';
+            
+            // NOTIFICACIÓN:
+            fetch("https://formspree.io/f/TU_ID_AQUÍ", {
+                method: "POST",
+                body: JSON.stringify({ mensaje: "¡Tu amiga acaba de leer tu tarjeta!" }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } else {
+            alert("¡Clave incorrecta! Inténtalo de nuevo.");
+        }
+    }
+</script>
+
+</body>
+</html>
